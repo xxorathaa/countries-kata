@@ -16,7 +16,8 @@ const mockCountry: Country = {
     svg: 'flagSvgUrl',
     alt: 'flagAltText'
   },
-  population: 10
+  population: 10,
+  ccn3: 'ccn',
 };
 
 jest.mock('axios', () => ({
@@ -31,7 +32,7 @@ describe('getCountries', () => {
 
     let countries = await getCountries();
 
-    expect(getMock).toBeCalledWith('https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital');
+    expect(getMock).toBeCalledWith('https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,ccn3');
     expect(countries[0].name.common).toBe(mockCountry.name.common);
   })
 })

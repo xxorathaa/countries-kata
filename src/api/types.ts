@@ -12,4 +12,5 @@ export interface Country {
     alt: string,
   },
   population: number,
+  ccn3: string,
 }

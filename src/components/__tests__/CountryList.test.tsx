@@ -16,7 +16,8 @@ const mockCountry: Country = {
     svg: 'flagSvgUrl',
     alt: 'flagAltText'
   },
-  population: 10
+  population: 10,
+  ccn3: 'ccn',
 };
 
 jest.mock('../../api/country', () => ({

@@ -15,7 +15,8 @@ const mockCountry: Country = {
     svg: 'flagSvgUrl',
     alt: 'flagAltText'
   },
-  population: 10
+  population: 10,
+  ccn3: 'ccn',
 };
 
 describe('<CountryListItem>', () => {
@@ -36,7 +37,7 @@ describe('<CountryListItem>', () => {
   });
 
   it('should render all capitals if a country has more than one', async () => {
-    const { getByText, getByAltText } = renderComponent({...mockCountry, capital:['capital1', 'capital2']});
+    const { getByText } = renderComponent({...mockCountry, capital:['capital1', 'capital2']});
 
     expect(getByText(`Capital(s): capital1, capital2`)).toBeInTheDocument();
   });
