@@ -12,7 +12,7 @@ export default function CountryList() {
   useEffect(() => {
     getCountries().then((response) => {
       setCountries(response);
-    })
+    });
   }, [])
 
   return (

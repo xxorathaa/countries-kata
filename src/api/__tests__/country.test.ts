@@ -32,7 +32,7 @@ const mockCountryDetail: CountryDetail = {
   languages: {
     'eng': 'English',
   },
-  timezones: ['UTC+12:00']
+  timezones: ['UTC+12:00'],
 }
 
 jest.mock('axios', () => ({
