@@ -1,4 +1,5 @@
 import './App.css';
+import CountryDetails from './components/CountryDetails';
 import CountryList from './components/CountryList';
 import {
   BrowserRouter,
@@ -13,8 +14,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="list" Component={CountryList} />
-          <Route path="details" Component={CountryList} />
-          <Route path=""  Component={CountryList} />
+          <Route path="details/:ccn3" Component={CountryDetails} />
+          <Route path="" Component={CountryList} />
         </Routes>
       </BrowserRouter>
     </div>
