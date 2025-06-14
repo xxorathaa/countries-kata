@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Country } from "./types";
 
 //todo make axios calls
 export async function getCountries(): Promise<Country[]> {

@@ -1,12 +1,7 @@
 import axios from "axios";
 
 import { getCountries } from "../country";
-
-jest.mock('axios', () => ({
-  get: jest.fn(),
-}));
-
-const getMock = axios.get as jest.Mock;
+import { Country } from "../types";
 
 const mockCountry: Country = {
   name: {
@@ -22,7 +17,13 @@ const mockCountry: Country = {
     alt: 'flagAltText'
   },
   population: 10
-}
+};
+
+jest.mock('axios', () => ({
+  get: jest.fn(),
+}));
+
+const getMock = axios.get as jest.Mock;
 
 describe('getCountries', () => {
   it('should return a list of countries', async () => {
