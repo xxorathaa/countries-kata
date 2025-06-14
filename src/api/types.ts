@@ -40,6 +40,7 @@ export interface CountryDetail extends Country {
     // "independent": true,
     // "status": "officially-assigned",
     // "unMember": true,
+    borders?: string[],
     currencies: {
       [key: string]: {
         symbol: string,

@@ -16,7 +16,7 @@ export default function CountryListItem({ country }: Props) {
             width={160}
           />
         </Col>
-        <Col xs={12} md={8} className={'justify-content-end'}>
+        <Col xs={12} md={8}>
           <span>
             {`Name: ${country.name.common}`}
           </span>
@@ -24,12 +24,12 @@ export default function CountryListItem({ country }: Props) {
           <span>
             {`Capital(s): ${country.capital.join(', ')}`}
           </span>
-          <span>
             <br />
+          <span>
             {`Region: ${country.region}`}
           </span>
-          <span>
             <br />
+          <span>
             {`Population: ${country.population}`}
           </span>
         </Col>
