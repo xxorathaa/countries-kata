@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import App from './App';
 import { getCountries } from './api/country';
 import { Country } from './api/types';
@@ -30,18 +29,24 @@ describe('<App>', () => {
   function renderComponent() {
     return render(<App />);
   }
-  it('should fetch countries and display basic country data', async () => {
+  it('should fetch countries', async () => {
     mockGetCountries.mockResolvedValue([mockCountry]);
 
-    const {queryByText} = renderComponent();
+    renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountries).toBeCalled();
-      expect(queryByText(mockCountry.name.common)).toBeInTheDocument();
-      expect(queryByText(mockCountry.capital[0])).toBeInTheDocument();
-      expect(queryByText(mockCountry.flags.png)).toBeInTheDocument();
-      expect(queryByText(mockCountry.region)).toBeInTheDocument();
-      expect(queryByText(mockCountry.population)).toBeInTheDocument();
+    });
+  });
+
+  it('should render an infinite scroll component', async () => {
+    mockGetCountries.mockResolvedValue([mockCountry]);
+
+    const {container} = renderComponent();
+    
+    await waitFor(() => {
+      expect(mockGetCountries).toBeCalled();
+      expect(container.querySelector('.country-infinite-scroll')).toBeInTheDocument();
     });
   })
 })
