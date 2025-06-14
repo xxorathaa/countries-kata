@@ -1,24 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { getCountries } from './api/country';
+import { Country } from './api/types';
 
 function App() {
+  const [countries, setCountries] = useState<Country[]>([]);
+
+  useEffect(() => {
+    getCountries().then((response) => {
+      setCountries(response);
+    })
+  })
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {countries.map((country: Country, index: number) => {
+        return (
+          <div key={`country-${index}`}>
+            <p>{country.name.common}</p>
+            <p>{country.capital[0]}</p>
+            <p>{country.flags.png}</p>
+            <p>{country.region}</p>
+            <p>{country.population}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
