@@ -1,5 +1,5 @@
-import { render, waitFor } from '@testing-library/react';
-import { useParams } from 'react-router';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import { useNavigate, useParams } from 'react-router';
 import CountryDetails from '../CountryDetails';
 import { getCountryDetails } from '../../api/country';
 import { CountryDetail, LanguageCodes } from '../../api/types';
@@ -48,8 +48,10 @@ const mockGetCountryDetails = getCountryDetails as jest.Mock;
 
 jest.mock('react-router', () => ({
   useParams: jest.fn(),
+  useNavigate: jest.fn(),
 }));
 const mockUseParams = useParams as jest.Mock;
+const mockUseNavigate = useNavigate as jest.Mock;
 
 describe('<CountryDetails>', () => {
   function renderComponent() {
@@ -67,15 +69,17 @@ describe('<CountryDetails>', () => {
     });
   });
 
-  it('should render nothing if no country is returned', async () => {
+  it('should render no country found if no country is returned', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([]);
 
-    const { container } = renderComponent();
+    const { container, getByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
-      expect(container.querySelector('.country-detail')).not.toBeInTheDocument();
+      expect(container.querySelector('.no-country-detail')).toBeInTheDocument();
+      expect(getByText('Country Not Found')).toBeInTheDocument();
+      expect(container.querySelector('.back-btn')).toBeInTheDocument();
     });
   });
 
@@ -83,7 +87,7 @@ describe('<CountryDetails>', () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
 
-    const { getByAltText, getByText } = renderComponent();
+    const { container, getByAltText, getByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
@@ -100,6 +104,7 @@ describe('<CountryDetails>', () => {
       expect(getByText(`Currency(s): United States dollar($)`)).toBeInTheDocument();
       expect(getByText('Language(s): English')).toBeInTheDocument();
       expect(getByText('Borders: English')).toBeInTheDocument();
+      expect(container.querySelector('.back-btn')).toBeInTheDocument();
     });
   });
 
@@ -176,7 +181,7 @@ describe('<CountryDetails>', () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, languages: { 'eng': 'English', 'ell': 'Greek' } }]);
 
-    const { getByAltText, getByText } = renderComponent();
+    const { getByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
@@ -188,7 +193,7 @@ describe('<CountryDetails>', () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: ['ENG', 'ELL'] }]);
 
-    const { getByAltText, getByText } = renderComponent();
+    const { getByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
@@ -205,6 +210,21 @@ describe('<CountryDetails>', () => {
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
       expect(queryByText('Borders: ')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should navigate to the country list page when back is pressed', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    const navigate = jest.fn();
+    mockUseNavigate.mockReturnValue(navigate);
+    mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: undefined }]);
+
+    const { getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      fireEvent.click(getByText('BACK'));
+      expect(navigate).toBeCalledWith('/');
     });
   });
 });

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Col, Row } from "reactstrap";
 import { getCountryDetails } from "../api/country";
 import { CountryDetail, LanguageCodes } from "../api/types";
 
 export default function CountryDetails() {
   const { ccn3 } = useParams();
+  const navigate = useNavigate();
   const [details, setDetails] = useState<CountryDetail | undefined>();
 
   useEffect(() => {
@@ -19,10 +20,22 @@ export default function CountryDetails() {
   }, [])
 
   if (details === undefined) {
-    //TODO no content and back button
-    return null;
+    return (
+      <Row className='no-country-detail'>
+        <Col md={2} />
+        <Col md={8}>
+          <h1>Country Not Found</h1>
+          <button
+            className='back-btn'
+            onClick={() => navigate('/')}>
+            BACK
+          </button>
+        </Col>
+        <Col md={2} />
+      </Row>
+    );
   }
-  
+
   const removeDuplicates = (arr: any[]) => Array.from(new Set(arr));
 
   const nativeNameList = () => removeDuplicates(Object.keys(details.name.nativeName)
@@ -104,6 +117,15 @@ export default function CountryDetails() {
               <span>
                 {`Borders: ${bordersList()}`}
               </span>)}
+          </Col>
+        </Row>
+        <Row className='btn-row'>
+          <Col>
+            <button
+              className='back-btn'
+              onClick={() => navigate('/')}>
+              BACK
+            </button>
           </Col>
         </Row>
       </Col>
