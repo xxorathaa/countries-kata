@@ -11,7 +11,7 @@ const mockCountryDetail: CountryDetail = {
     nativeName: {
       eng: {
         official: 'official name',
-        common: 'common name'
+        common: 'common name',
       }
     }
   },
@@ -20,7 +20,7 @@ const mockCountryDetail: CountryDetail = {
   flags: {
     png: 'flagPngUrl',
     svg: 'flagSvgUrl',
-    alt: 'flagAltText'
+    alt: 'flagAltText',
   },
   borders: [
     "ENG",
@@ -30,7 +30,7 @@ const mockCountryDetail: CountryDetail = {
   currencies: {
     'USD': {
       symbol: '$',
-      name: 'United States dollar'
+      name: 'United States dollar',
     }
   },
   subregion: 'subregion',
@@ -91,7 +91,7 @@ describe('<CountryDetails>', () => {
       const flagImgElement = getByAltText(mockCountryDetail.flags.alt);
       expect(flagImgElement).toHaveAttribute('src', mockCountryDetail.flags.png);
       expect(getByText(mockCountryDetail.name.common)).toBeInTheDocument();
-      expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
+      expect(getByText(`Native Name: common name`)).toBeInTheDocument();
       expect(getByText(`Capital(s): ${mockCountryDetail.capital.join(', ')}`)).toBeInTheDocument();
       expect(getByText(`Region: ${mockCountryDetail.region}`)).toBeInTheDocument();
       expect(getByText(`Sub Region: ${mockCountryDetail.subregion}`)).toBeInTheDocument();
@@ -100,6 +100,31 @@ describe('<CountryDetails>', () => {
       expect(getByText(`Currency(s): United States dollar($)`)).toBeInTheDocument();
       expect(getByText('Language(s): English')).toBeInTheDocument();
       expect(getByText('Borders: English')).toBeInTheDocument();
+    });
+  });
+
+  it('should display more than one common native name comma separated', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([{
+      ...mockCountryDetail, name: {
+        nativeName: {
+          'eng': {
+            official: 'official name',
+            common: 'common name',
+          },
+          'ell': {
+            official: 'official name in greek',
+            common: 'common name in greek',
+          }
+        }
+      }
+    }]);
+
+    const { getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByText(`Native Name: common name, common name in greek`)).toBeInTheDocument();
     });
   });
 
@@ -118,7 +143,7 @@ describe('<CountryDetails>', () => {
       }
     }]);
 
-    const { getByAltText, getByText } = renderComponent();
+    const { getByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');

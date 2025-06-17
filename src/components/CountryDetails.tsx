@@ -23,9 +23,29 @@ export default function CountryDetails() {
     return null;
   }
 
-  const languagesList = () => Object.keys(details.languages).map(key => ({ key, value: details.languages[key] })).map((language) => language.value).join(', ');
-  const currenciesList = () => Object.keys(details.currencies).map(key => ({ key, value: details.currencies[key] })).map((currency) => `${currency.value.name}(${currency.value.symbol})`).join(', ');
-  const bordersList = () => details.borders?.map((border: string) => LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes]).join(', ');
+  const nativeNameList = () => Object.keys(details.name.nativeName)
+    .map(key => ({
+      key,
+      value: details.name.nativeName[key],
+    })).map((nativeName) => `${nativeName.value.common}`).join(', ');
+
+  const languagesList = () => Object.keys(details.languages)
+    .map(key => ({
+      key,
+      value: details.languages[key],
+    })).map((language) => language.value).join(', ');
+
+  const currenciesList = () => Object.keys(details.currencies)
+    .map(key => ({
+      key,
+      value: details.currencies[key],
+    }))
+    .map((currency) => `${currency.value.name}(${currency.value.symbol})`)
+    .join(', ');
+
+  const bordersList = () => details.borders?.map((border: string) =>
+    LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes])
+    .join(', ');
 
   return (
     <Row className='country-detail'>
@@ -44,7 +64,7 @@ export default function CountryDetails() {
           <Col xs={12}>
             <h1>{details.name.common}</h1>
             {/* TODO native name */}
-            <h3>{`Native Name: ${JSON.stringify(details.name.nativeName)}`}</h3>
+            <h3>{`Native Name: ${nativeNameList()}`}</h3>
           </Col>
         </Row>
         <Row>
