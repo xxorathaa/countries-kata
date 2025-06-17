@@ -109,11 +109,9 @@ describe('<CountryDetails>', () => {
       ...mockCountryDetail, name: {
         nativeName: {
           'eng': {
-            official: 'official name',
             common: 'common name',
           },
           'ell': {
-            official: 'official name in greek',
             common: 'common name in greek',
           }
         }
@@ -125,6 +123,29 @@ describe('<CountryDetails>', () => {
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
       expect(getByText(`Native Name: common name, common name in greek`)).toBeInTheDocument();
+    });
+  });
+
+  it('should not display the same common native name more than once', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([{
+      ...mockCountryDetail, name: {
+        nativeName: {
+          'eng': {
+            common: 'common name',
+          },
+          'ell': {
+            common: 'common name',
+          }
+        }
+      }
+    }]);
+
+    const { getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByText(`Native Name: common name`)).toBeInTheDocument();
     });
   });
 

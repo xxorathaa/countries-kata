@@ -22,12 +22,15 @@ export default function CountryDetails() {
     //TODO no content and back button
     return null;
   }
+  
+  const removeDuplicates = (arr: any[]) => Array.from(new Set(arr));
 
-  const nativeNameList = () => Object.keys(details.name.nativeName)
+  const nativeNameList = () => removeDuplicates(Object.keys(details.name.nativeName)
     .map(key => ({
       key,
       value: details.name.nativeName[key],
-    })).map((nativeName) => `${nativeName.value.common}`).join(', ');
+    })).map((nativeName) => `${nativeName.value.common}`))
+    .join(', ');
 
   const languagesList = () => Object.keys(details.languages)
     .map(key => ({
