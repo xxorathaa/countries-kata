@@ -23,8 +23,9 @@ export default function CountryDetails() {
     return null;
   }
 
-  const languagesList = () => Object.keys(details.languages);
-  const currenciesList = () => Object.keys(details.currencies).map(key => ({key, value: details.currencies[key]}));
+  const languagesList = () => Object.keys(details.languages).map(key => ({ key, value: details.languages[key] })).map((language) => language.value).join(', ');
+  const currenciesList = () => Object.keys(details.currencies).map(key => ({ key, value: details.currencies[key] })).map((currency) => `${currency.value.name}(${currency.value.symbol})`).join(', ');
+  const bordersList = () => details.borders?.map((border: string) => LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes]).join(', ');
 
   return (
     <Row className='country-detail'>
@@ -68,18 +69,17 @@ export default function CountryDetails() {
               {`Timezone(s): ${details.timezones.join(', ')}`}
             </span>
             <br />
-            {/* TODO currencies */}
             <span>
-              {`Currency(s): ${currenciesList().map((currency) => `${currency.value.name}(${currency.value.symbol})`).join(', ')}`}
+              {`Currency(s): ${currenciesList()}`}
             </span>
             <br />
             <span>
-              {`Language(s): ${languagesList().map((language: string) => LanguageCodes[language as keyof typeof LanguageCodes]).join(', ')}`}
+              {`Language(s): ${languagesList()}`}
             </span>
             <br />
             {details.borders && (
               <span>
-                {`Borders: ${details.borders.map((border: string) => LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes]).join(', ')}`}
+                {`Borders: ${bordersList()}`}
               </span>)}
           </Col>
         </Row>
