@@ -23,7 +23,7 @@ const mockCountryDetail: CountryDetail = {
     alt: 'flagAltText',
   },
   borders: [
-    "ENG",
+    "BEN",
   ],
   population: 10,
   ccn3: 'ccn',
@@ -104,7 +104,7 @@ describe('<CountryDetails>', () => {
       expect(getByText(`Timezone(s): ${mockCountryDetail.timezones.join(', ')}`)).toBeInTheDocument();
       expect(getByText(`Currency(s): United States dollar($)`)).toBeInTheDocument();
       expect(getByText('Language(s): English')).toBeInTheDocument();
-      expect(getByText('Borders: English')).toBeInTheDocument();
+      expect(getByText('Borders: Bengali')).toBeInTheDocument();
       expect(container.querySelector('.back-btn')).toBeInTheDocument();
     });
   });
@@ -202,6 +202,18 @@ describe('<CountryDetails>', () => {
     });
   });
 
+  it('should display the border code when its value is not known', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: ['BEN', 'BENT'] }]);
+
+    const { queryByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(queryByText('Borders: Bengali, BENT')).toBeInTheDocument();
+    });
+  });
+
   it('should not display the borders if there are none', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: undefined }]);
@@ -218,7 +230,7 @@ describe('<CountryDetails>', () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     const navigate = jest.fn();
     mockUseNavigate.mockReturnValue(navigate);
-    mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: undefined }]);
+    mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
 
     const { getByText } = renderComponent();
 

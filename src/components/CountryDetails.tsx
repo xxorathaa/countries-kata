@@ -59,8 +59,10 @@ export default function CountryDetails() {
     .map((currency) => `${currency.value.name}(${currency.value.symbol})`)
     .join(', ');
 
-  const bordersList = () => details.borders?.map((border: string) =>
-    LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes])
+  const bordersList = () => details.borders?.map((border: string) => {
+    const found = LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes]
+    return found ? found : border;
+  })
     .join(', ');
 
   return (
