@@ -22,6 +22,10 @@ const mockCountryDetail: CountryDetail = {
     svg: 'flagSvgUrl',
     alt: 'flagAltText'
   },
+  borders: [
+    "BD1",
+    "BD2",
+  ],
   population: 10,
   ccn3: 'ccn',
   currencies: {
@@ -76,29 +80,50 @@ describe('<CountryDetails>', () => {
     });
   });
 
-  it('should display the country flag', async () => {
+  it('should display the country details', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
 
-    const { getByAltText } = renderComponent();
+    const { getByAltText, getByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
       expect(getByAltText(mockCountryDetail.flags.alt)).toBeInTheDocument();
       const flagImgElement = getByAltText(mockCountryDetail.flags.alt);
       expect(flagImgElement).toHaveAttribute('src', mockCountryDetail.flags.png);
+      expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
+      expect(getByText(`Capital(s): ${mockCountryDetail.capital.join(', ')}`)).toBeInTheDocument();
+      expect(getByText(`Region: ${mockCountryDetail.region}`)).toBeInTheDocument();
+      expect(getByText(`Sub Region: ${mockCountryDetail.subregion}`)).toBeInTheDocument();
+      expect(getByText(`Population: ${mockCountryDetail.population}`)).toBeInTheDocument();
+      expect(getByText(`Timezone(s): ${mockCountryDetail.timezones.join(', ')}`)).toBeInTheDocument();
+      expect(getByText(`Currencie(s): ${JSON.stringify(mockCountryDetail.currencies)}`)).toBeInTheDocument();
+      expect(getByText(`Language(s): ${JSON.stringify(mockCountryDetail.languages)}`)).toBeInTheDocument();
+      expect(getByText(`Borders: ${JSON.stringify(mockCountryDetail.borders)}`)).toBeInTheDocument();
     });
   });
 
-  it('should display the country native name', async () => {
+  it('should not display the borders if there are none', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
-    mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
+    mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, borders: undefined}]);
 
-    const { getByText } = renderComponent();
+    const { queryByText } = renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
-      expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
+      expect(queryByText('Borders: ')).not.toBeInTheDocument();
     });
   });
+
+  // it('should display the country native name', async () => {
+  //   mockUseParams.mockReturnValue({ ccn3: '798' });
+  //   mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
+
+  //   const { getByText } = renderComponent();
+
+  //   await waitFor(() => {
+  //     expect(mockGetCountryDetails).toBeCalledWith('798');
+  //     expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
+  //   });
+  // });
 });

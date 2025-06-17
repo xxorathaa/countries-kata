@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import { Country, CountryDetail } from "../api/types";
-import { getCountries, getCountryDetails } from "../api/country";
-import { Col, Row } from "reactstrap";
-import InfiniteScroll from "react-infinite-scroll-component";
-import CountryListItem from "./CountryListItem";
 import { useParams } from "react-router";
-import { omit, pick } from "lodash";
+import { Col, Row } from "reactstrap";
+import { getCountryDetails } from "../api/country";
+import { CountryDetail } from "../api/types";
 
 export default function CountryDetails() {
   const { ccn3 } = useParams();
@@ -44,6 +41,44 @@ export default function CountryDetails() {
             <h1>{details.name.common}</h1>
             {/* TODO native name */}
             <h3>{`Native Name: ${JSON.stringify(details.name.nativeName)}`}</h3>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <span>
+              {`Capital(s): ${details.capital.join(', ')}`}
+            </span>
+            <br />
+            <span>
+              {`Region: ${details.region}`}
+            </span>
+            <br />
+            <span>
+              {`Sub Region: ${details.subregion}`}
+            </span>
+            <br />
+            <span>
+              {`Population: ${details.population}`}
+            </span>
+            <br />
+            <span>
+              {`Timezone(s): ${details.timezones.join(', ')}`}
+            </span>
+            <br />
+            {/* TODO currencies */}
+            <span>
+              {`Currencie(s): ${JSON.stringify(details.currencies)}`}
+            </span>
+            <br />
+            {/* TODO currencies */}
+            <span>
+              {`Language(s): ${JSON.stringify(details.languages)}`}
+            </span>
+            {/* TODO borders */}
+            {details.borders && (
+              <span>
+                {`Borders: ${JSON.stringify(details.borders)}`}
+              </span>)}
           </Col>
         </Row>
       </Col>
