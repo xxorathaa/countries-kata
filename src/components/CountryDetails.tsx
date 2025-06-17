@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Col, Row } from "reactstrap";
 import { getCountryDetails } from "../api/country";
-import { CountryDetail } from "../api/types";
+import { CountryDetail, LanguageCodes } from "../api/types";
 
 export default function CountryDetails() {
   const { ccn3 } = useParams();
@@ -22,6 +22,8 @@ export default function CountryDetails() {
     //TODO no content and back button
     return null;
   }
+
+  const languages = () => Object.keys(details.languages);
 
   return (
     <Row className='country-detail'>
@@ -70,10 +72,10 @@ export default function CountryDetails() {
               {`Currencie(s): ${JSON.stringify(details.currencies)}`}
             </span>
             <br />
-            {/* TODO currencies */}
             <span>
-              {`Language(s): ${JSON.stringify(details.languages)}`}
+              {`Language(s): ${languages().map((language: string) => LanguageCodes[language as keyof typeof LanguageCodes]).join(', ')}`}
             </span>
+            <br />
             {/* TODO borders */}
             {details.borders && (
               <span>

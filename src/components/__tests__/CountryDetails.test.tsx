@@ -2,7 +2,7 @@ import { render, waitFor } from '@testing-library/react';
 import { useParams } from 'react-router';
 import CountryDetails from '../CountryDetails';
 import { getCountryDetails } from '../../api/country';
-import { CountryDetail } from '../../api/types';
+import { CountryDetail, LanguageCodes } from '../../api/types';
 
 const mockCountryDetail: CountryDetail = {
   name: {
@@ -98,8 +98,20 @@ describe('<CountryDetails>', () => {
       expect(getByText(`Population: ${mockCountryDetail.population}`)).toBeInTheDocument();
       expect(getByText(`Timezone(s): ${mockCountryDetail.timezones.join(', ')}`)).toBeInTheDocument();
       expect(getByText(`Currencie(s): ${JSON.stringify(mockCountryDetail.currencies)}`)).toBeInTheDocument();
-      expect(getByText(`Language(s): ${JSON.stringify(mockCountryDetail.languages)}`)).toBeInTheDocument();
+      expect(getByText(`Language(s): English`)).toBeInTheDocument();
       expect(getByText(`Borders: ${JSON.stringify(mockCountryDetail.borders)}`)).toBeInTheDocument();
+    });
+  });
+
+  it('should display more that one language comma separated', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, languages: {'eng': 'English', 'ell': 'Greek'}}]);
+
+    const { getByAltText, getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByText(`Language(s): English, Greek`)).toBeInTheDocument();
     });
   });
 
