@@ -8,7 +8,12 @@ const mockCountryDetail: CountryDetail = {
   name: {
     common: 'commonName',
     official: 'officialName',
-    nativeName: undefined
+    nativeName: {
+      eng: {
+        official: 'official name',
+        common: 'common name'
+      }
+    }
   },
   capital: ['capitalCity'],
   region: 'region',
@@ -47,14 +52,53 @@ describe('<CountryDetails>', () => {
   function renderComponent() {
     return render(<CountryDetails />);
   }
+
   it('should fetch country details', async () => {
-    mockUseParams.mockReturnValue({ccn3: '798'});
+    mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
 
     renderComponent();
 
     await waitFor(() => {
       expect(mockGetCountryDetails).toBeCalledWith('798');
-    })
+    });
+  });
+
+  it('should render nothing if no country is returned', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([]);
+
+    const { container } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(container.querySelector('.country-detail')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should display the country flag', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
+
+    const { getByAltText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByAltText(mockCountryDetail.flags.alt)).toBeInTheDocument();
+      const flagImgElement = getByAltText(mockCountryDetail.flags.alt);
+      expect(flagImgElement).toHaveAttribute('src', mockCountryDetail.flags.png);
+    });
+  });
+
+  it('should display the country native name', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
+
+    const { getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
+    });
   });
 });
