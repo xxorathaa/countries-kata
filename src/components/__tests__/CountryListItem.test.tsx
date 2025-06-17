@@ -1,23 +1,35 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { Country } from '../../api/types';
 import CountryListItem from '../CountryListItem';
+import { useNavigate } from 'react-router';
 
 const mockCountry: Country = {
   name: {
     common: 'commonName',
     official: 'officialName',
-    nativeName: undefined
+    nativeName: {
+      'eng': {
+        common: 'common name',
+        official: 'official name',
+      }
+    }
   },
   capital: ['capitalCity'],
   region: 'region',
   flags: {
     png: 'flagPngUrl',
     svg: 'flagSvgUrl',
-    alt: 'flagAltText'
+    alt: 'flagAltText',
   },
   population: 10,
   ccn3: 'ccn',
 };
+
+jest.mock('react-router', () => ({
+  useNavigate: jest.fn(),
+}));
+
+const mockUseNavigate = useNavigate as jest.Mock;
 
 describe('<CountryListItem>', () => {
   function renderComponent(country=mockCountry) {
@@ -40,5 +52,15 @@ describe('<CountryListItem>', () => {
     const { getByText } = renderComponent({...mockCountry, capital:['capital1', 'capital2']});
 
     expect(getByText(`Capital(s): capital1, capital2`)).toBeInTheDocument();
+  });
+
+  it('should navigate to the detail page when clicked', async () => {
+    const navigate = jest.fn();
+    mockUseNavigate.mockReturnValueOnce(navigate);
+    const { getByText } = renderComponent(mockCountry);
+
+    expect(getByText(`Name: ${mockCountry.name.common}`)).toBeInTheDocument();
+    fireEvent.click(getByText(`Name: ${mockCountry.name.common}`));
+    expect(navigate).toBeCalledWith(`details/${mockCountry.ccn3}`);
   });
 })

@@ -1,13 +1,20 @@
 import { Card, Col, Row } from "reactstrap";
 import { Country } from "../api/types";
+import { useNavigate } from "react-router";
 
 interface Props {
   country: Country;
 }
 
 export default function CountryListItem({ country }: Props) {
+  const navigate = useNavigate();
+
   return (
-    <Card>
+    <Card
+      className='country-list-item'
+      style={{cursor:'pointer'}}
+      onClick={() => navigate(`details/${country.ccn3}`)}
+    >
       <Row className={'align-items-center'}>
         <Col xs={12} md={4}>
           <img
@@ -24,11 +31,11 @@ export default function CountryListItem({ country }: Props) {
           <span>
             {`Capital(s): ${country.capital.join(', ')}`}
           </span>
-            <br />
+          <br />
           <span>
             {`Region: ${country.region}`}
           </span>
-            <br />
+          <br />
           <span>
             {`Population: ${country.population}`}
           </span>

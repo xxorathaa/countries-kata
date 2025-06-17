@@ -2,19 +2,25 @@ import { render, waitFor } from '@testing-library/react';
 import CountryList from '../CountryList';
 import { Country } from '../../api/types';
 import { getCountries } from '../../api/country';
+import { useNavigate } from 'react-router';
 
 const mockCountry: Country = {
   name: {
     common: 'commonName',
     official: 'officialName',
-    nativeName: undefined
+    nativeName: {
+      'eng': {
+        common: 'common name',
+        official: 'native name',
+      }
+    }
   },
   capital: ['capitalCity'],
   region: 'region',
   flags: {
     png: 'flagPngUrl',
     svg: 'flagSvgUrl',
-    alt: 'flagAltText'
+    alt: 'flagAltText',
   },
   population: 10,
   ccn3: 'ccn',
@@ -25,6 +31,10 @@ jest.mock('../../api/country', () => ({
 }));
 
 const mockGetCountries = getCountries as jest.Mock;
+
+jest.mock('react-router', () => ({
+  useNavigate: jest.fn(),
+}));
 
 describe('<CountryList>', () => {
   function renderComponent() {
@@ -43,8 +53,8 @@ describe('<CountryList>', () => {
   it('should render an infinite scroll component', async () => {
     mockGetCountries.mockResolvedValue([mockCountry]);
 
-    const {container} = renderComponent();
-    
+    const { container } = renderComponent();
+
     await waitFor(() => {
       expect(mockGetCountries).toBeCalled();
       expect(container.querySelector('.country-infinite-scroll')).toBeInTheDocument();

@@ -50,6 +50,7 @@ jest.mock('react-router', () => ({
   useParams: jest.fn(),
   useNavigate: jest.fn(),
 }));
+
 const mockUseParams = useParams as jest.Mock;
 const mockUseNavigate = useNavigate as jest.Mock;
 
