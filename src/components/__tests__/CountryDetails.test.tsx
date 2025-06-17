@@ -97,15 +97,38 @@ describe('<CountryDetails>', () => {
       expect(getByText(`Sub Region: ${mockCountryDetail.subregion}`)).toBeInTheDocument();
       expect(getByText(`Population: ${mockCountryDetail.population}`)).toBeInTheDocument();
       expect(getByText(`Timezone(s): ${mockCountryDetail.timezones.join(', ')}`)).toBeInTheDocument();
-      expect(getByText(`Currency(s): ${JSON.stringify(mockCountryDetail.currencies)}`)).toBeInTheDocument();
+      expect(getByText(`Currency(s): United States dollar($)`)).toBeInTheDocument();
       expect(getByText('Language(s): English')).toBeInTheDocument();
       expect(getByText('Borders: English')).toBeInTheDocument();
     });
   });
 
-  it('should display more that one language comma separated', async () => {
+  it('should display more than one currency comma separated', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
-    mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, languages: {'eng': 'English', 'ell': 'Greek'}}]);
+    mockGetCountryDetails.mockResolvedValue([{
+      ...mockCountryDetail, currencies: {
+        'USD': {
+          symbol: '$',
+          name: 'United States dollar'
+        },
+        'CNY': {
+          symbol: '¥',
+          name: 'Chinese yuan'
+        }
+      }
+    }]);
+
+    const { getByAltText, getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByText(`Currency(s): United States dollar($), Chinese yuan(¥)`)).toBeInTheDocument();
+    });
+  });
+
+  it('should display more than one language comma separated', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, languages: { 'eng': 'English', 'ell': 'Greek' } }]);
 
     const { getByAltText, getByText } = renderComponent();
 
@@ -115,9 +138,9 @@ describe('<CountryDetails>', () => {
     });
   });
 
-  it('should display more that one border comma separated', async () => {
+  it('should display more than one border comma separated', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
-    mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, borders: ['ENG', 'ELL']}]);
+    mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: ['ENG', 'ELL'] }]);
 
     const { getByAltText, getByText } = renderComponent();
 
@@ -129,7 +152,7 @@ describe('<CountryDetails>', () => {
 
   it('should not display the borders if there are none', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
-    mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, borders: undefined}]);
+    mockGetCountryDetails.mockResolvedValue([{ ...mockCountryDetail, borders: undefined }]);
 
     const { queryByText } = renderComponent();
 

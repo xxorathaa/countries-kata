@@ -23,7 +23,8 @@ export default function CountryDetails() {
     return null;
   }
 
-  const languages = () => Object.keys(details.languages);
+  const languagesList = () => Object.keys(details.languages);
+  const currenciesList = () => Object.keys(details.currencies).map(key => ({key, value: details.currencies[key]}));
 
   return (
     <Row className='country-detail'>
@@ -69,11 +70,11 @@ export default function CountryDetails() {
             <br />
             {/* TODO currencies */}
             <span>
-              {`Currency(s): ${JSON.stringify(details.currencies)}`}
+              {`Currency(s): ${currenciesList().map((currency) => `${currency.value.name}(${currency.value.symbol})`).join(', ')}`}
             </span>
             <br />
             <span>
-              {`Language(s): ${languages().map((language: string) => LanguageCodes[language as keyof typeof LanguageCodes]).join(', ')}`}
+              {`Language(s): ${languagesList().map((language: string) => LanguageCodes[language as keyof typeof LanguageCodes]).join(', ')}`}
             </span>
             <br />
             {details.borders && (
