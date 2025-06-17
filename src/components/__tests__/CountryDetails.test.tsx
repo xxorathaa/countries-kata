@@ -23,8 +23,7 @@ const mockCountryDetail: CountryDetail = {
     alt: 'flagAltText'
   },
   borders: [
-    "BD1",
-    "BD2",
+    "ENG",
   ],
   population: 10,
   ccn3: 'ccn',
@@ -98,8 +97,8 @@ describe('<CountryDetails>', () => {
       expect(getByText(`Population: ${mockCountryDetail.population}`)).toBeInTheDocument();
       expect(getByText(`Timezone(s): ${mockCountryDetail.timezones.join(', ')}`)).toBeInTheDocument();
       expect(getByText(`Currencie(s): ${JSON.stringify(mockCountryDetail.currencies)}`)).toBeInTheDocument();
-      expect(getByText(`Language(s): English`)).toBeInTheDocument();
-      expect(getByText(`Borders: ${JSON.stringify(mockCountryDetail.borders)}`)).toBeInTheDocument();
+      expect(getByText('Language(s): English')).toBeInTheDocument();
+      expect(getByText('Borders: English')).toBeInTheDocument();
     });
   });
 
@@ -115,6 +114,18 @@ describe('<CountryDetails>', () => {
     });
   });
 
+  it('should display more that one border comma separated', async () => {
+    mockUseParams.mockReturnValue({ ccn3: '798' });
+    mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, borders: ['ENG', 'ELL']}]);
+
+    const { getByAltText, getByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(mockGetCountryDetails).toBeCalledWith('798');
+      expect(getByText('Borders: English, Greek')).toBeInTheDocument();
+    });
+  });
+
   it('should not display the borders if there are none', async () => {
     mockUseParams.mockReturnValue({ ccn3: '798' });
     mockGetCountryDetails.mockResolvedValue([{...mockCountryDetail, borders: undefined}]);
@@ -126,16 +137,4 @@ describe('<CountryDetails>', () => {
       expect(queryByText('Borders: ')).not.toBeInTheDocument();
     });
   });
-
-  // it('should display the country native name', async () => {
-  //   mockUseParams.mockReturnValue({ ccn3: '798' });
-  //   mockGetCountryDetails.mockResolvedValue([mockCountryDetail]);
-
-  //   const { getByText } = renderComponent();
-
-  //   await waitFor(() => {
-  //     expect(mockGetCountryDetails).toBeCalledWith('798');
-  //     expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
-  //   });
-  // });
 });

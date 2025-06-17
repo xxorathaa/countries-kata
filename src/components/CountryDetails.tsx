@@ -76,10 +76,9 @@ export default function CountryDetails() {
               {`Language(s): ${languages().map((language: string) => LanguageCodes[language as keyof typeof LanguageCodes]).join(', ')}`}
             </span>
             <br />
-            {/* TODO borders */}
             {details.borders && (
               <span>
-                {`Borders: ${JSON.stringify(details.borders)}`}
+                {`Borders: ${details.borders.map((border: string) => LanguageCodes[border.toLowerCase() as keyof typeof LanguageCodes]).join(', ')}`}
               </span>)}
           </Col>
         </Row>
