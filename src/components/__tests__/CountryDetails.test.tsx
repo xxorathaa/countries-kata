@@ -90,13 +90,14 @@ describe('<CountryDetails>', () => {
       expect(getByAltText(mockCountryDetail.flags.alt)).toBeInTheDocument();
       const flagImgElement = getByAltText(mockCountryDetail.flags.alt);
       expect(flagImgElement).toHaveAttribute('src', mockCountryDetail.flags.png);
+      expect(getByText(mockCountryDetail.name.common)).toBeInTheDocument();
       expect(getByText(`Native Name: ${JSON.stringify(mockCountryDetail.name.nativeName)}`)).toBeInTheDocument();
       expect(getByText(`Capital(s): ${mockCountryDetail.capital.join(', ')}`)).toBeInTheDocument();
       expect(getByText(`Region: ${mockCountryDetail.region}`)).toBeInTheDocument();
       expect(getByText(`Sub Region: ${mockCountryDetail.subregion}`)).toBeInTheDocument();
       expect(getByText(`Population: ${mockCountryDetail.population}`)).toBeInTheDocument();
       expect(getByText(`Timezone(s): ${mockCountryDetail.timezones.join(', ')}`)).toBeInTheDocument();
-      expect(getByText(`Currencie(s): ${JSON.stringify(mockCountryDetail.currencies)}`)).toBeInTheDocument();
+      expect(getByText(`Currency(s): ${JSON.stringify(mockCountryDetail.currencies)}`)).toBeInTheDocument();
       expect(getByText('Language(s): English')).toBeInTheDocument();
       expect(getByText('Borders: English')).toBeInTheDocument();
     });

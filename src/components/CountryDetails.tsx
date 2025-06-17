@@ -69,7 +69,7 @@ export default function CountryDetails() {
             <br />
             {/* TODO currencies */}
             <span>
-              {`Currencie(s): ${JSON.stringify(details.currencies)}`}
+              {`Currency(s): ${JSON.stringify(details.currencies)}`}
             </span>
             <br />
             <span>
